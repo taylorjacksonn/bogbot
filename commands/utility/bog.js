@@ -87,9 +87,9 @@ async function startBogReverse(interaction) {
     let userIds = usersInCall.map(member => member.user.id);
 
     // Reverse the list of player names
-    console.log('non reverse userIds: ', userIds);
+    // console.log('non reverse userIds: ', userIds);
     userIds = userIds.reverse();
-    console.log('reversed userIds: ', userIds);
+    // console.log('reversed userIds: ', userIds);
 
     // Call startBog with the reversed order of players
     await startBog(interaction, userIds);
@@ -234,7 +234,7 @@ function mentionPlayerAtTurn(playerIds, textChannel, resource, interaction, rand
 
         // calculate playback time of audio currently being streamed 
         let playbackTime = Math.floor(playbackDuration/1000); // convert ms to seconds, rounding down with Math.floor
-        console.log('Seconds in: ', playbackTime);
+
 
         // if the time matches one of the turn breakpoints, then execute
         if (breakpoints.includes(playbackTime)) {
@@ -258,13 +258,13 @@ function mentionPlayerAtTurn(playerIds, textChannel, resource, interaction, rand
                     lastMsg = message;
                 }).catch(console.error);
             
-            console.log(`It's ${currentPlayer} turn.`);    
+            // console.log(`It's ${currentPlayer} turn.`);    
             currentPlayerIndex = (currentPlayerIndex + 1) % playerIds.length;
         }
         // timing specific additions
         if (playbackTime === 307) {
             textChannel.send('Bog down in the valleyooOOOOOOoooOOo :beers:');
-            console.log('Final turn has finished.')
+            console.log('Final turn has finished. Exiting voice channel.')
         }
         // once song ends, disconnect from voice chat and clear turns interval
         if (playbackTime === 325 && vc) {
@@ -278,7 +278,7 @@ function mentionPlayerAtTurn(playerIds, textChannel, resource, interaction, rand
 async function pauseBog(interaction) {
     let vc = voice.getVoiceConnection(interaction.guildId);
     if (!vc) {
-        interaction.reply("*I'm not in the voice channel...* Use /bog to start.");
+        interaction.reply("*I'm not in the voice channel yet.* Use /bog to start.");
     } else {
         interaction.reply('*Bog has been paused.*')
         player.pause();
@@ -288,7 +288,7 @@ async function pauseBog(interaction) {
 async function playBog(interaction) {
     let vc = voice.getVoiceConnection(interaction.guildId);
     if (!vc) {
-        interaction.reply("*I'm not in the voice channel...* Use /bog to start.");
+        interaction.reply("*I'm not in the voice channel.* Use /bog to start.");
     } else {
         interaction.reply('*Bog has been unpaused.*')
         player.unpause();
@@ -304,7 +304,7 @@ async function stopBog(interaction) {
     let vc = voice.getVoiceConnection(interaction.guildId);
     
     if (!vc) {
-        interaction.reply("I guess I'll just ignore that? *I'm not even in the voice channel...*");
+        interaction.reply("There's nothing to stop, I'm not in the voice channel.");
     } else {
         // stop music playback
         player.stop();
