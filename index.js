@@ -9,7 +9,7 @@ const { Client, Collection, Events, GatewayIntentBits, Guild } = require('discor
 const { Player } = require("discord-player");
 // const { token } = require('./config.json');
 
-// env token for EC2
+// env token for EC2 //
 const token = process.env.DISCORD_TOKEN;
 
 // create client with intents
