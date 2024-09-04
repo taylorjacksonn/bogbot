@@ -198,7 +198,8 @@ async function startBog(interaction, playerOrder, randomOrder = false) {
         await interaction.reply(`:star: **Welcome to BogBot Early Access** :star: \n *Available commands: 
 **/pause** to pause
 **/play** to unpause 
-**/stop** to cancel the bog 
+**/stop** to cancel the bog
+**/bog** to start the bog in default order 
 **/bogreverse** to bog in reverse order
 **/bograndom** to choose turns at random*
         \n Rattlin' Bog started with ${namesAsString}. :beers:`);
