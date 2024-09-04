@@ -38,7 +38,7 @@ client.on('guildCreate', guild => {
 
 
 //
-const commands = require('./commands/utility/bog');
+const commands = require('./commands/utility/bog.js');
 
 // Initialize client.commands as an empty Collection
 client.commands = new Collection();
