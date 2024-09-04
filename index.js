@@ -1,10 +1,16 @@
+// loading environment variables from .env file for EC2
+require('dotenv').config();
+
 // load command files on startup
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, Guild } = require('discord.js');
 // const { VoiceConnectionStatus, AudioPlayerStatus } = require('@discordjs/voice');
 const { Player } = require("discord-player");
-const { token } = require('./config.json');
+// const { token } = require('./config.json');
+
+// env token for EC2
+const token = process.env.DISCORD_TOKEN;
 
 // create client with intents
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages] });
