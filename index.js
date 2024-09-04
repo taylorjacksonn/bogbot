@@ -5,17 +5,55 @@ require('dotenv').config();
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, Guild } = require('discord.js');
-// const { VoiceConnectionStatus, AudioPlayerStatus } = require('@discordjs/voice');
-const { Player } = require("discord-player");
-// const { token } = require('./config.json');
+const { REST, Routes } = require('discord.js');
 
-// env token for EC2 //
+const { Player } = require("discord-player");
+
+
+// env token for EC2
 const token = process.env.DISCORD_TOKEN;
+const { clientId } = require('./config.json');
 
 // create client with intents
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages] });
-
 const player = new Player(client);
+
+// function to deploy commands
+async function deployCommands(guildId) {
+    try {
+        const commands = [];
+        const foldersPath = path.join(__dirname, 'commands');
+        const commandFolders = fs.readdirSync(foldersPath);
+
+        for (const folder of commandFolders) {
+            const commandsPath = path.join(foldersPath, folder);
+            const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+            for (const file of commandFiles) {
+                const filePath = path.join(commandsPath, file);
+                const commandsArray = require(filePath);
+                for (const command of commandsArray) {
+                    if ('data' in command && 'execute' in command) {
+                        commands.push(command.data.toJSON());
+                    } else {
+                        console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+                    }
+                }
+            }
+        }
+
+        const rest = new REST().setToken(token);
+        const data = await rest.put(
+            Routes.applicationGuildCommands(clientId, guildId),
+            { body: commands },
+        );
+
+        console.log(`Successfully reloaded ${data.length} application (/) commands for guild ID ${guildId}.`);
+    } catch (error) {
+        console.error(`Failed to reload commands for guild ID ${guildId}:`, error);
+    }
+}
+
+
 
 // dynamically updating guild Id: update the config.json file with the guild ID
 function updateConfig(guildId) {
@@ -30,10 +68,13 @@ function updateConfig(guildId) {
 }
 
 // get guild id when joining new server
-client.on('guildCreate', guild => {
+client.on('guildCreate', async guild => {
     const guildId = guild.id;
     console.log(`Joined new guild, ${guild}. Guild ID: ${guildId}`);
     updateConfig(guildId);
+
+    // deploy commands for new guild!
+    await deployCommands(guildId);
 });
 
 

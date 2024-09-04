@@ -1,18 +1,10 @@
 const { REST, Routes } = require('discord.js');
-const { clientId, guildId } = require('./config.json');
+const { clientId } = require('./config.json');
+const config = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 
-require('dotenv').config();
-// env token for EC2 //
-const token = process.env.DISCORD_TOKEN;
-
-// Check if guildId is empty
-if (!guildId) {
-    console.error('Guild ID is not set in config.json. Skipping deployment.');
-    return;
-}
-
+const guildId = config.guildId;
 
 const commands = [];
 // Grab all command folders from commands directory 
@@ -35,26 +27,4 @@ for (const folder of commandFolders) {
 			}
 		}
 	}
-
 }
-
-// Construct and prepare instance of the REST module
-const rest = new REST().setToken(token);
-
-// Deploy commands
-(async () => {
-	try {
-		console.log(`Started refreshing ${commands.length} application (/) commands.`);
-
-		// The put method is used to fully refresh all commands in the guild with the current set
-		const data = await rest.put(
-			Routes.applicationGuildCommands(clientId, guildId),
-			{ body: commands },
-		);
-
-		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
-	} catch (error) {
-		// And of course, make sure you catch and log any errors!
-		console.error(error);
-	}
-})();
