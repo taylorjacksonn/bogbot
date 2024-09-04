@@ -21,6 +21,7 @@ const player = new Player(client);
 // function to deploy commands
 async function deployCommands(guildId) {
     try {
+        console.log("Guild ID: ", guildId);
         const commands = [];
         const foldersPath = path.join(__dirname, 'commands');
         const commandFolders = fs.readdirSync(foldersPath);
