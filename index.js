@@ -53,8 +53,6 @@ async function deployCommands(guildId) {
     }
 }
 
-
-
 // dynamically updating guild Id: update the config.json file with the guild ID
 function updateConfig(guildId) {
     // read the existing config file
@@ -77,8 +75,6 @@ client.on('guildCreate', async guild => {
     await deployCommands(guildId);
 });
 
-
-//
 const commands = require('./commands/utility/bog.js');
 
 // Initialize client.commands as an empty Collection

@@ -4,8 +4,6 @@ const config = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const guildId = config.guildId;
-
 const commands = [];
 // Grab all command folders from commands directory 
 const foldersPath = path.join(__dirname, 'commands');
